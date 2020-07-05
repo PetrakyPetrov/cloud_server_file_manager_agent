@@ -1,7 +1,7 @@
 # Cloud server file manager agent
 Custom file manager agent with REST API
 
-Requirements:
+**Requirements:**
 
-OS: Linux
-Go
+ - OS: Linux
+ - Go

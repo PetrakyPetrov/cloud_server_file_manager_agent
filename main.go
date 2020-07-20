@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// CloudWorkDir system work dir
+// CloudWorkDir system folder
 const CloudWorkDir = "/cloud_storage"
 
 func check(e error) {

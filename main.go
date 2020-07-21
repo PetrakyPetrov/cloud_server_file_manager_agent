@@ -25,7 +25,8 @@ func apiResponse(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	allowedEndpoints := map[string]bool{
-		"files": true,
+		"files":  true,
+		"folder": true,
 	}
 
 	apiEndPointURL := r.URL.Path

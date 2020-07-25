@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"log"
@@ -90,13 +90,38 @@ func apiResponse(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case "POST":
-			fmt.Println(workDir)
+
 			_, err := os.Stat(workDir)
 			if os.IsNotExist(err) {
 				errDir := os.MkdirAll(workDir, 0755)
 				if errDir != nil {
 					log.Fatal(err)
 				}
+			}
+
+			if endPoint == "folder" {
+
+				decoder := json.NewDecoder(r.Body)
+				type FolderStruct struct {
+					Name string `json:"name"`
+				}
+				var t FolderStruct
+				err := decoder.Decode(&t)
+				if err != nil {
+					panic(err)
+				}
+
+				folderName := t.Name
+				_, err = os.Stat(workDir + folderName)
+				if os.IsNotExist(err) {
+					errDir := os.MkdirAll(workDir+folderName, 0755)
+					if errDir != nil {
+						log.Fatal(err)
+					}
+				}
+				w.WriteHeader(http.StatusCreated)
+				w.Write([]byte(`{"message": "Folder created successfully"}`))
+				return
 			}
 
 			file, handler, err := r.FormFile("file")
@@ -161,5 +186,5 @@ func main() {
 	log.Println("Agent started")
 
 	http.HandleFunc("/account/", apiResponse)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
